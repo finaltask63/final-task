@@ -26,7 +26,7 @@ func main() {
 
 func appHandler(w http.ResponseWriter, r *http.Request) {
 
-  fmt.Fprintf(w, "Hello, %s! v0.0.1 dev", r.URL.Path[1:])
+  fmt.Fprintf(w, "Hello, %s! v0.1", r.URL.Path[1:])
 
 }
 
