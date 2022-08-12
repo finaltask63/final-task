@@ -4,14 +4,14 @@ import (
   "fmt"
   "log"
   "net/http"
-  "path"
+//  "path"
+  "regexp"
+  "io/ioutil"
 )
 
 
 func main() {
 
-  http.HandleFunc("/secret", appSecret)
-  http.HandleFunc("/images", appImage)
   http.HandleFunc("/", appHandler)
 
   log.Println("Started, serving on port 8080")
@@ -26,26 +26,47 @@ func main() {
 
 func appHandler(w http.ResponseWriter, r *http.Request) {
 
-//  if regexp.MatchString( "images/", r.URL.Path ) {
-//    fmt.Fprintf(w, "images found" )
-//  } else {
-//    fmt.Fprintf(w, "No images found" )
-//  }
-
-  fmt.Fprintf(w, "Url path: %s", r.URL.Path[1:])
-
-}
+  var img = regexp.MustCompile(`images\/`)
+  var lst = regexp.MustCompile(`list`)
 
 
-func appSecret(w http.ResponseWriter, r *http.Request) {
+  switch {
 
-  fmt.Fprintf( w, "Secret here." )
+    case img.MatchString( r.URL.Path ):
+      appImage( w, r )
+    case lst.MatchString( r.URL.Path ):
+      fmt.Fprintf(w, "List" )
+    default:
+      appHtml( w, r );
+  }
+
+  //fmt.Fprintf(w, "Url path: %s", r.URL.Path[1:])
 
 }
 
 
 func appImage(w http.ResponseWriter, r *http.Request) {
 
-  fmt.Fprintf(w, "Image: %s", path.Base(r.URL.Path) )
+  //fmt.Fprintf(w, "Image: %s", path.Base(r.URL.Path) )
+  fileBytes, err := ioutil.ReadFile("images/test.jpg")
+  if err != nil {
+    panic(err)
+  }
+  w.WriteHeader(http.StatusOK)
+  w.Header().Set("Content-Type", "application/octet-stream")
+  w.Write(fileBytes)
+  return
 
+}
+
+
+func appHtml(w http.ResponseWriter, r *http.Request) {
+
+  fmt.Fprintf(w, "default html" )
+
+}
+
+
+
+func handleRequest(w http.ResponseWriter, r *http.Request) {
 }
