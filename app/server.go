@@ -4,7 +4,6 @@ import (
   "fmt"
   "log"
   "net/http"
-  "time"
   "path"
 )
 
@@ -27,9 +26,7 @@ func main() {
 
 func appHandler(w http.ResponseWriter, r *http.Request) {
 
-  fmt.Println(time.Now(), "Hello from my new fresh server")
-
-  fmt.Fprintf(w, "Hello, %s! v0.0.1", r.URL.Path[1:])
+  fmt.Fprintf(w, "Hello, %s! v0.1", r.URL.Path[1:])
 
 }
 
