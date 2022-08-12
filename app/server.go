@@ -5,6 +5,7 @@ import (
   "log"
   "net/http"
   "path"
+  "regexp"
 )
 
 
@@ -26,7 +27,13 @@ func main() {
 
 func appHandler(w http.ResponseWriter, r *http.Request) {
 
-  fmt.Fprintf(w, "Hello, %s! v0.1", r.URL.Path[1:])
+//  if regexp.MatchString( "images/", r.URL.Path ) {
+//    fmt.Fprintf(w, "images found" )
+//  } else {
+//    fmt.Fprintf(w, "No images found" )
+//  }
+
+  fmt.Fprintf(w, "Url path: %s", r.URL.Path[1:])
 
 }
 
