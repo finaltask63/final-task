@@ -4,7 +4,6 @@ import (
   "fmt"
   "log"
   "net/http"
-//  "path"
   "regexp"
   "io/ioutil"
 )
@@ -35,7 +34,7 @@ func appHandler(w http.ResponseWriter, r *http.Request) {
     case img.MatchString( r.URL.Path ):
       appImage( w, r )
     case lst.MatchString( r.URL.Path ):
-      fmt.Fprintf(w, "List" )
+      appList( w, r )
     default:
       appHtml( w, r );
   }
@@ -62,7 +61,7 @@ func appImage(w http.ResponseWriter, r *http.Request) {
 
 func appHtml(w http.ResponseWriter, r *http.Request) {
 
-  var htmlstr = `<doctype html>
+  var htmlstr = `<!doctype html>
 <html>
 <head>
 <title>The final task</title>
@@ -86,6 +85,28 @@ func appHtml(w http.ResponseWriter, r *http.Request) {
 }
 
 
+func appList(w http.ResponseWriter, r *http.Request) {
 
-func handleRequest(w http.ResponseWriter, r *http.Request) {
+    var str = "";
+
+    files, err := ioutil.ReadDir("images/")
+    if err != nil {
+      fmt.Fprintf(w, "{[]}" )
+      return
+    }
+
+    for _, file := range files {
+
+      if str == "" {
+        str = file.Name()
+      } else {
+	str = `,"`+file.Name()+`"`
+      }
+
+    }
+
+    str = "{["+str+"]}"
+
+    fmt.Fprintf(w, str)
+
 }
