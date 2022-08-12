@@ -62,7 +62,26 @@ func appImage(w http.ResponseWriter, r *http.Request) {
 
 func appHtml(w http.ResponseWriter, r *http.Request) {
 
-  fmt.Fprintf(w, "default html" )
+  var htmlstr = `<doctype html>
+<html>
+<head>
+<title>The final task</title>
+<link rel="stylesheet" type="text/css" href="/css/style.css">
+</head>
+<body>
+<div class="header">
+<select id="sel">
+<option value="0">-- select --</option>
+</select>
+</dev>
+<div class="info">
+</dev>
+<script src="/js/script.js" />
+</body>
+</html>`;
+
+  w.Header().Set("Content-Type", "text/html; charset=utf-8")
+  fmt.Fprintf(w, "%s", htmlstr )
 
 }
 
