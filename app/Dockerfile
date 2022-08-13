@@ -7,8 +7,8 @@ WORKDIR /app
 COPY go.mod ./
 RUN go mod download
 
-ADD build/css ./css
-ADD build/js ./js
+ADD build/page.html ./
+ADD build/secret.html ./
 ADD build/images ./images
 COPY *.go ./
 

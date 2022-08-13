@@ -1,0 +1,9 @@
+body {
+    background-color: 0xeeeeee;
+}
+
+div.header {
+    border: 1px solid black;
+    border-radius: 5px;
+
+}
