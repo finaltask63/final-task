@@ -1,11 +1,11 @@
 package main
 
 import (
-  "fmt"
   "log"
   "net/http"
   "regexp"
   "io/ioutil"
+  "path"
 )
 
 
@@ -26,15 +26,14 @@ func main() {
 func appHandler(w http.ResponseWriter, r *http.Request) {
 
   var img = regexp.MustCompile(`images\/`)
-  var lst = regexp.MustCompile(`list`)
-
+  var secret = regexp.MustCompile(`secret`)
 
   switch {
-
     case img.MatchString( r.URL.Path ):
       appImage( w, r )
-    case lst.MatchString( r.URL.Path ):
-      appList( w, r )
+      break
+    case secret.MatchString( r.URL.Path ):
+      appSecret( w, r )
     default:
       appHtml( w, r );
   }
@@ -47,9 +46,12 @@ func appHandler(w http.ResponseWriter, r *http.Request) {
 func appImage(w http.ResponseWriter, r *http.Request) {
 
   //fmt.Fprintf(w, "Image: %s", path.Base(r.URL.Path) )
-  fileBytes, err := ioutil.ReadFile("images/test.jpg")
+  var fileBytes []byte
+  var err error
+
+  fileBytes, err = ioutil.ReadFile("images/"+path.Base(r.URL.Path))
   if err != nil {
-    panic(err)
+    fileBytes, err = ioutil.ReadFile("images/none.png")
   }
   w.WriteHeader(http.StatusOK)
   w.Header().Set("Content-Type", "application/octet-stream")
@@ -61,52 +63,27 @@ func appImage(w http.ResponseWriter, r *http.Request) {
 
 func appHtml(w http.ResponseWriter, r *http.Request) {
 
-  var htmlstr = `<!doctype html>
-<html>
-<head>
-<title>The final task</title>
-<link rel="stylesheet" type="text/css" href="/css/style.css">
-</head>
-<body>
-<div class="header">
-<select id="sel">
-<option value="0">-- select --</option>
-</select>
-</dev>
-<div class="info">
-</dev>
-<script src="/js/script.js" />
-</body>
-</html>`;
-
-  w.Header().Set("Content-Type", "text/html; charset=utf-8")
-  fmt.Fprintf(w, "%s", htmlstr )
+  fileBytes, err := ioutil.ReadFile("page.html")
+  if err != nil {
+    return
+  }
+  w.WriteHeader(http.StatusOK)
+  w.Header().Set("Content-Type", "text/html")
+  w.Write(fileBytes)
+  return
 
 }
 
 
-func appList(w http.ResponseWriter, r *http.Request) {
+func appSecret(w http.ResponseWriter, r *http.Request) {
 
-    var str = "";
-
-    files, err := ioutil.ReadDir("images/")
-    if err != nil {
-      fmt.Fprintf(w, "{[]}" )
-      return
-    }
-
-    for _, file := range files {
-
-      if str == "" {
-        str = file.Name()
-      } else {
-	str = `,"`+file.Name()+`"`
-      }
-
-    }
-
-    str = "{["+str+"]}"
-
-    fmt.Fprintf(w, str)
+  fileBytes, err := ioutil.ReadFile("secret.html")
+  if err != nil {
+    return
+  }
+  w.WriteHeader(http.StatusOK)
+  w.Header().Set("Content-Type", "text/html")
+  w.Write(fileBytes)
+  return
 
 }
